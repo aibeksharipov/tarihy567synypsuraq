@@ -1,58 +1,74 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тарих</title>
-    <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #f0f0f0;
-        }
-        #question {
-            text-align: center;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            max-width: 600px;
-            width: 90%;
-            white-space: pre-wrap;
-            font-size: 18px;
-            color: #333;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тарих</title>
+<style>
+    body, html {
+        height: 100%;
+        margin: 0;
+        font-family: "Times New Roman", Times, serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f0f0f0;
+    }
+    #question {
+        text-align: center;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        max-width: 600px;
+        width: 90%;
+        white-space: pre-wrap;
+        font-size: 36px;
+        color: #333;
+    }
+    .grade-block {
+        margin-bottom: 30px;
+    }
+</style>
 </head>
 <body>
-    <div id="question"></div>
+<div id="question">Жүктелуде...</div>
 <script>
     const params = new URLSearchParams(window.location.search);
     const questionNum = params.get('question');
+    const container = document.getElementById('question');
 
     if (questionNum) {
-        const container = document.getElementById('question');
         container.innerHTML = '';
-
         const grades = [5, 6, 7];
+
         grades.forEach(grade => {
             const gradeDiv = document.createElement('div');
-            gradeDiv.style.marginBottom = '20px';
+            gradeDiv.className = 'grade-block';
             gradeDiv.textContent = `${grade}-ші Сынып\n`;
-            
-            const urlSpan = document.createElement('span');
-            urlSpan.style.fontSize = '24px';
-            urlSpan.style.display = 'block';
-            urlSpan.textContent = `$(question).fetch(https://aibeksharipov.github.io/tarihy567synypsuraq/${grade}/${questionNum}.txt)`;
 
-            gradeDiv.appendChild(urlSpan);
+            const fileUrl = `https://aibeksharipov.github.io/tarihy567synypsuraq/${grade}/${questionNum}.txt`;
+            
+            fetch(fileUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error('Файл табылмады');
+                    return response.text();
+                })
+                .then(text => {
+                    const textNode = document.createElement('div');
+                    textNode.textContent = text;
+                    gradeDiv.appendChild(textNode);
+                })
+                .catch(err => {
+                    const errorNode = document.createElement('div');
+                    errorNode.textContent = `Қате: ${err.message}`;
+                    gradeDiv.appendChild(errorNode);
+                });
+
             container.appendChild(gradeDiv);
         });
     } else {
-        document.getElementById('question').textContent = 'Параметр табылмады';
+        container.textContent = 'Параметр табылмады';
     }
 </script>
 </body>
