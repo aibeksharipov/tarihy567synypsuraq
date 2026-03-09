@@ -1,67 +1,59 @@
-<!DOCTYPE html>
-<html lang="kk">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мысал</title>
+    <title>Тарих</title>
     <style>
-        body {
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: "Times New Roman", Times, serif;
-            font-size: 48px;
-            text-align: center;
             background-color: #f0f0f0;
         }
-        img {
-            max-width: 90%;
-            max-height: 90%;
+        #question {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 90%;
+            white-space: pre-wrap;
+            font-size: 18px;
+            color: #333;
         }
     </style>
 </head>
 <body>
-    <div id="question">
-        Жүктелуде...
-    </div>
+    <div id="question"></div>
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const questionNum = params.get('question');
 
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const classNum = params.get('class');
-        const questionNum = params.get('question');
+    if (questionNum) {
+        const container = document.getElementById('question');
+        container.innerHTML = '';
 
-        if (classNum && questionNum) {
-            const baseUrl = `https://aibeksharipov.github.io/tarihy567synypsuraq/${classNum}/${questionNum}`;
+        const grades = [5, 6, 7];
+        grades.forEach(grade => {
+            const gradeDiv = document.createElement('div');
+            gradeDiv.style.marginBottom = '20px';
+            gradeDiv.textContent = `${grade}-ші Сынып\n`;
             
-            // Сурет файлының кеңейтімін тексеру
-            const imgExtensions = ['.png', '.jpg', '.jpeg'];
-            let isImage = imgExtensions.some(ext => questionNum.endsWith(ext) || `${baseUrl}`.endsWith(ext));
+            const urlSpan = document.createElement('span');
+            urlSpan.style.fontSize = '24px';
+            urlSpan.style.display = 'block';
+            urlSpan.textContent = `$(question).fetch(https://aibeksharipov.github.io/tarihy567synypsuraq/${grade}/${questionNum}.txt)`;
 
-            if (isImage) {
-                const img = document.createElement('img');
-                img.src = `${baseUrl}`;
-                img.alt = "Сурет жүктелуде...";
-                document.getElementById('question').innerHTML = '';
-                document.getElementById('question').appendChild(img);
-            } else {
-                // Текст файлын жүктеу
-                fetch(`${baseUrl}.txt`)
-                    .then(response => {
-                        if (!response.ok) throw new Error('Файл табылмады');
-                        return response.text();
-                    })
-                    .then(text => {
-                        document.getElementById('question').textContent = text;
-                    })
-                    .catch(err => {
-                        document.getElementById('question').textContent = `Қате: ${err.message}`;
-                    });
-            }
-        } else {
-            document.getElementById('question').textContent = 'Параметрлер табылмады';
-        }
-    </script>
+            gradeDiv.appendChild(urlSpan);
+            container.appendChild(gradeDiv);
+        });
+    } else {
+        document.getElementById('question').textContent = 'Параметр табылмады';
+    }
+</script>
 </body>
 </html>
