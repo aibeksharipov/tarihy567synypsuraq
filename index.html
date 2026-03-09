@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мысал</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center; /* Горизонталь бойынша орталау */
+            align-items: center;     /* Вертикаль бойынша орталау */
+            height: 100vh;           /* Экран биіктігіне тең */
+            margin: 0;
+            font-family: "Times New Roman", Times, serif; /* TNR */
+            font-size: 48px;         /* Үлкен мәтін */
+            text-align: center;
+            background-color: #f0f0f0; /* жеңіл фон */
+        }
+    </style>
+</head>
+<body>
+    <div id="question">
+        Жүктелуде...
+    </div>
+
+    <script>
+        // URL параметрлерін алу
+        const params = new URLSearchParams(window.location.search);
+        const classNum = params.get('class');
+        const questionNum = params.get('question');
+
+        if (classNum && questionNum) {
+            const path = `/${classNum}/${questionNum}.txt`;
+
+            // Файлды жүктеу
+            fetch(path)
+                .then(response => {
+                    if (!response.ok) throw new Error('Файл табылмады');
+                    return response.text();
+                })
+                .then(text => {
+                    document.getElementById('question').textContent = text;
+                })
+                .catch(err => {
+                    document.getElementById('question').textContent = `Қате: ${err.message}`;
+                });
+        } else {
+            document.getElementById('question').textContent = 'Параметрлер табылмады';
+        }
+    </script>
+</body>
+</html>
